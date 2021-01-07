@@ -1,5 +1,6 @@
 import { Form, Button, Card, Container, Row, Col } from "react-bootstrap";
 import React, { useState } from "react";
+import AlertDismissible from "../Alerts/booksSaved"
 import Header from "../Header/Header";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import API from "../../utils/API";
@@ -10,11 +11,11 @@ const Main = () => {
     const [books, setBooks] = useState({});
     const [searchTitle, setSearchTitle] = useState("");
     const [display, setDisplay] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     function searchBooks(query) {
         API.search(query)
             .then(res => {
-                console.log(res.data)
                 setBooks(res.data);
             })
             .catch(err => console.log(err));
@@ -28,7 +29,6 @@ const Main = () => {
 
     const handleSave = (index) => {
         console.log(books.items[index])
-        console.log("INDEX", index)
         API.save({
             id: books.items[index]?.id,
             title: books.items[index]?.volumeInfo.title,
@@ -46,10 +46,14 @@ const Main = () => {
             handleSubmit(e);
         }
     };
-
-
+    
+    const displayConfirm= () => {
+        setShowConfirm(!showConfirm);
+    }
+    
+    
     return (
-        <div>
+        <div >
             <Header />
             <Form.Group className="form">
                 <Form.Control
@@ -103,7 +107,7 @@ const Main = () => {
                                                 id="save-button"
                                                 variant="light"
                                                 type="submit"
-                                                onClick={() => handleSave(index)}
+                                                onClick={() => {handleSave(index); displayConfirm(index);}}
                                             >Save
             </Button>
                                         </Card.Text>
@@ -114,6 +118,13 @@ const Main = () => {
                     )
                 })}
             </Container>
+            <footer className="alert">
+            {showConfirm ? (
+                <AlertDismissible closeDisplay={() => displayConfirm()} />
+              ) : (
+                ""
+              )}
+            </footer>
 
         </div >
     )

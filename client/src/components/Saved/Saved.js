@@ -11,13 +11,11 @@ const SavedBooks = () => {
         API.get()
             .then(res => {
                 setBooks(res.data)
-                console.log(res.data)
             })
     }, [])
 
     const handleRemove = (index) => {
         console.log(books.data[index])
-        console.log("INDEX", index)
         window.location.reload();
         API.delete(books.data[index]._id)
             .then((res) => console.log(res))
